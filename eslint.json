@@ -1,0 +1,6 @@
+ {
+	"extends": [
+        "eslint-config-prettier"
+	],
+	"plugins": ["prettier"]
+}
