@@ -2,7 +2,7 @@ export function mutation(
 	target: any,
 	propertyName: string,
 	descriptor: PropertyDescriptor
-) {
+): void {
 	target[propertyName]._isMutation = true;
 }
 
@@ -10,7 +10,7 @@ export function utility(
 	target: any,
 	propertyName: string,
 	descriptor: PropertyDescriptor
-) {
+): void {
 	target[propertyName]._isUtility = true;
 }
 

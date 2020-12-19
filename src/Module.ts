@@ -1,4 +1,3 @@
-import { Store } from 'vuex/types/index';
 import ModuleState from './ModuleState';
 import { StoreContext } from './StoreContext';
 

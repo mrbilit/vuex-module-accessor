@@ -1,6 +1,5 @@
 import { Store } from 'vuex/types/index';
 import Module from './Module';
-import ModuleState from './ModuleState';
 import ModuleWrapper from './ModuleWrapper';
 import { StoreContext } from './StoreContext';
 import { ExtractState } from './Types';
