@@ -18,4 +18,4 @@ yarn:
 yarn add vuex-module-accessor
 ```
 
-#### [nuxt example](/examples/nuxt-example)
+#### [nuxt example](/tree/master/Examples/nuxt-example)

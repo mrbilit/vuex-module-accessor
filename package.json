@@ -1,11 +1,16 @@
 {
-	"name": "module-accessor",
+	"name": "vuex-module-accessor",
 	"version": "1.0.0",
 	"description": "a module accessor for vuex",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
-	"repository": "https://gitlab.atighgasht.com/MehranTaheri/module-accessor.git",
-	"keywords": ["vue", "vuex","nuxtjs","nuxt"],
+	"repository": "https://github.com/badihi/vuex-module-accessor",
+	"keywords": [
+		"vue",
+		"vuex",
+		"nuxtjs",
+		"nuxt"
+	],
 	"author": "Ahmadreza Badihi",
 	"license": "MIT",
 	"private": true,
