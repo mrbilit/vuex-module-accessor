@@ -11,7 +11,6 @@
 	"dependencies": {
 		"@nuxt/typescript-runtime": "^2.0.0",
 		"core-js": "^3.6.5",
-		"module-accessor": "https://gitlab.atighgasht.com/MehranTaheri/module-accessor.git",
 		"nuxt": "^2.14.6"
 	},
 	"devDependencies": {
