@@ -13,7 +13,6 @@
 	],
 	"author": "Ahmadreza Badihi",
 	"license": "MIT",
-	"private": true,
 	"files": [
 		"lib/**/*"
 	],
