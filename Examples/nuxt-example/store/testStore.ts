@@ -1,4 +1,4 @@
-import { ModuleAccessor, Module, mutation } from 'module-accessor';
+import { ModuleAccessor, Module, mutation } from 'vuex-module-accessor';
 
 class TestState {
 	testValue: string = 'Module Accessor';

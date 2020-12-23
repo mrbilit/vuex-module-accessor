@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { typedMapState } from 'module-accessor';
+import { typedMapState } from 'vuex-module-accessor';
 
 // stores
 import test, { TestModule } from '../store/testStore';

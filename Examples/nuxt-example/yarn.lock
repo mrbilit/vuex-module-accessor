@@ -7885,7 +7885,7 @@ vue@^2.6.12:
 
 vuex-module-accessor@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.npmjs.org/vuex-module-accessor/-/vuex-module-accessor-1.0.0.tgz#9861ee37aaaff62935f57ad6faa293b69bb59f6d"
+  resolved "https://registry.yarnpkg.com/vuex-module-accessor/-/vuex-module-accessor-1.0.0.tgz#9861ee37aaaff62935f57ad6faa293b69bb59f6d"
   integrity sha512-3QH6Uu9Fq/JRDLNiVTYrdFaZ3jrEZJnL6ZPw95CB6aPLMn7C60YSOIdNTvGw6JkjBtr1ST+Ztkx+DIV19kIceA==
 
 vuex@^3.6.0:
