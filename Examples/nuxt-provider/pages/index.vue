@@ -1,45 +1,26 @@
 <template>
 	<div class="container">
-		<div class="title">{{ testValue }}</div>
-		<button @click="reset">reset</button>
-		<div class="counter-container">
-			<button @click="decrease">-</button>
-			<div>
-				{{ count }}
-			</div>
-			<button @click="increase">+</button>
-		</div>
+		<show-number />
 	</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { typedMapState } from 'vuex-module-accessor';
+import testStore, { TestState } from '../store/testStore';
 
-// stores
-import test, { TestModule } from '../store/testStore';
+import ShowNumber from '../components/ShowNumber.vue';
+import countProvider from '../providers/counter.vue';
 
-export default Vue.extend({
-	computed: {
-		testStore(): TestModule {
-			return test.of(this.$store);
-		},
-		...typedMapState(test, {
-			testValue: (state) => state.testValue,
-			count: (state) => state.count
-		})
+export default countProvider.provider.extend({
+	// inject: ['test'],
+	computed: {},
+	components: {
+		ShowNumber
 	},
-	methods: {
-		increase() {
-			this.testStore.increase();
-		},
-		decrease() {
-			this.testStore.decrease();
-		},
-		reset() {
-			this.testStore.reset();
-		}
-	}
+	mounted() {
+		// console.log((this as any).default);
+	},
+	methods: {}
 });
 </script>
 

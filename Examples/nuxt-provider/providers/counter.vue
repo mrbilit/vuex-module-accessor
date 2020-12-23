@@ -1,4 +1,13 @@
-import { ModuleAccessor, Module, mutation } from 'vuex-module-accessor';
+<template>
+	<div>
+		<slot />
+	</div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import { ModuleAccessor, Module, mutation } from '../../../src';
+import provider from '../../../src/provider';
 
 export class TestState {
 	testValue: string = 'Module Accessor';
@@ -29,4 +38,6 @@ export class TestModule extends Module<TestState> {
 	}
 }
 
-export default new ModuleAccessor(new TestModule(), 'testStore/');
+export const accessor = new ModuleAccessor(new TestModule());
+export default new provider(accessor);
+</script>
