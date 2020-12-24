@@ -1,0 +1,66 @@
+<template>
+	<provider>
+		<div class="container">
+			<counter />
+		</div>
+	</provider>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+import testStore from '../providers/testStore';
+
+import Counter from '../components/Counter.vue';
+
+import { provider } from 'vuex-module-accessor';
+
+export default Vue.extend({
+	computed: {},
+	components: {
+		Provider: provider(testStore, 'testStore'),
+		Counter
+	}
+});
+</script>
+
+<style>
+.container {
+	margin: 0 auto;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+button {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.1);
+	border: 0;
+	outline: none;
+	cursor: pointer;
+	overflow: hidden;
+	box-sizing: border-box;
+	padding: 10px;
+	margin: 10px;
+}
+button:hover {
+	box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.2);
+}
+
+title {
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+
+.counter-container {
+	display: flex;
+	align-items: center;
+}
+</style>
