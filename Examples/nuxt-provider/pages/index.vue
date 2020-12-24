@@ -1,26 +1,26 @@
 <template>
-	<div class="container">
-		<show-number />
-	</div>
+	<provider>
+		<div class="container">
+			<counter />
+		</div>
+	</provider>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import testStore, { TestState } from '../store/testStore';
 
-import ShowNumber from '../components/ShowNumber.vue';
-import countProvider from '../providers/counter.vue';
+import testStore from '../providers/testStore';
 
-export default countProvider.provider.extend({
-	// inject: ['test'],
+import Counter from '../components/Counter.vue';
+
+import { provider } from 'vuex-module-accessor';
+
+export default Vue.extend({
 	computed: {},
 	components: {
-		ShowNumber
-	},
-	mounted() {
-		// console.log((this as any).default);
-	},
-	methods: {}
+		Provider: provider(testStore, 'testStore'),
+		Counter
+	}
 });
 </script>
 
