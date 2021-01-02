@@ -11,13 +11,20 @@ export default function <
 	TState = ExtractState<TModule>
 >(accessor: ModuleAccessor<TModule, TState>, providerName: string) {
 	return Vue.extend({
-		inject: ['__providerData'],
+		inject: { __providerData: { from: '__providerData', default: undefined } },
 		data() {
-			return {
-				[providerName]: accessor.of<TModule>(
-					((this as any).__providerData as ProviderData)[providerName]
-				)
-			};
+			console.log((this as any).__providerData);
+			if ((this as any).__providerData) {
+				return {
+					[providerName]: accessor.of<TModule>(
+						(this as any).__providerData as ProviderData
+					)
+				};
+			} else {
+				return {
+					[providerName]: accessor.of<TModule>(this.$store)
+				};
+			}
 		}
 	});
 }

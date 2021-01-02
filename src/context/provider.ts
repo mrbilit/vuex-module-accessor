@@ -10,10 +10,7 @@ Vue.use(Vuex);
 export default function provider<
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(
-	accessor: ModuleAccessor<TModule, TState>,
-	providerName: string
-): VueConstructor {
+>(module: TModule, providerName: string): VueConstructor {
 	return {
 		props: {
 			root: {
@@ -21,34 +18,31 @@ export default function provider<
 				default: false
 			}
 		},
-		data: () => ({
-			__providerData: {} as ProviderData
-		}),
-		inject: ['__providerData'],
+		inject: { __providerData: { from: '__providerData', default: undefined } },
 		provide() {
-			const providerData = this.__providerData || { providers: [] };
-			if (this.__providerData) {
-				if (this.root) {
-					providerData[providerName] = new Vuex.Store({
-						...accessor
-					});
-					providerData.providers.push(providerName);
-				} else {
-					const lastProviderName =
-						providerData.providers[providerData.providers.length - 1];
-					providerData[lastProviderName].registerModule(providerName, {
-						...accessor
-					});
-				}
-			} else if (this.root) {
-				providerData[providerName] = new Vuex.Store({
-					...accessor
-				});
-				providerData.providers.push(providerName);
+			if (this.root) {
+				return {
+					__providerData: new Vuex.Store(
+						new ModuleAccessor<TModule, TState>(module)
+					)
+				};
 			} else {
-				throw new Error('No provider found');
+				if (this.__providerData) {
+					(this.__providerData as ProviderData).registerModule(providerName, {
+						...new ModuleAccessor<TModule, TState>(module),
+						namespaced: true
+					});
+				} else {
+					if (this.$store) {
+						this.$store.registerModule(
+							providerName,
+							new ModuleAccessor<TModule, TState>(module)
+						);
+					} else {
+						throw new Error('No vuex provided!');
+					}
+				}
 			}
-			return { __providerData: providerData };
 		},
 		render(createElement: any) {
 			return createElement('div', this.$slots.default);
