@@ -1,5 +1,5 @@
 import Vue, { VueConstructor } from 'vue';
-import Vuex, { Store } from 'vuex';
+import Vuex, { Module as VModule } from 'vuex';
 import ModuleAccessor from '../ModuleAccessor';
 import Module from '../Module';
 import { ExtractState } from '../Types';
@@ -10,79 +10,134 @@ Vue.use(Vuex);
 export default function provider<
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(module: TModule, moduleName?: string): VueConstructor {
+>(module: TModule): VueConstructor {
+	const getModuleNames = (path: string, moduleName: string): string[] => {
+		const modules = path.split('/');
+		modules.pop();
+		modules.push(moduleName as string);
+		return modules;
+	};
 	return {
 		props: {
 			root: {
 				type: Boolean,
 				default: false
+			},
+			moduleName: {
+				type: String,
+				default: ''
+			},
+			bedrock: {
+				type: Boolean,
+				default: false
 			}
 		},
+		data() {
+			return { localModuleName: 'provider', localAccessor: null };
+		},
 		inject: { __providerData: { from: '__providerData', default: undefined } },
-		provide(): { __providerData: ProviderData } | undefined {
+		provide(): { __providerData: ProviderData | null } | undefined {
+			const getNewModule = (
+				namespace: string
+			): {
+				accessor: ModuleAccessor<TModule, TState>;
+				module: VModule<any, any>;
+			} => {
+				const accessor = new ModuleAccessor<TModule, TState>(module, namespace);
+				this.localAccessor = accessor;
+				return {
+					module: {
+						namespaced: true,
+						state: {
+							...accessor.state()
+						},
+						getters: accessor.getters,
+						actions: accessor.actions,
+						mutations: accessor.mutations
+					},
+					accessor
+				};
+			};
+			// set module name
+			const moduleName =
+				this.moduleName || (this.$options._componentTag as string);
+			this.localModuleName = moduleName;
+			//
 			const providerData = this.__providerData as ProviderData;
+			let newProviderData: ProviderData = {
+				path: '',
+				accessors: {}
+			};
+			const getPath = (): string => {
+				return `${providerData?.path || ''}${moduleName}/`;
+			};
 			if (this.root) {
+				const newModule = getNewModule('');
 				return {
 					__providerData: {
 						path: '',
-						$path: '',
-						providerStore: new Vuex.Store(
-							new ModuleAccessor<TModule, TState>(module)
-						)
+						providerStore: new Vuex.Store(newModule.module),
+						accessors: {
+							root: newModule.accessor
+						}
 					}
 				};
 			} else {
-				if (moduleName) {
-					if (providerData && providerData.providerStore) {
-						const { providerStore, path } = providerData;
-						const modules = path.split('/');
-						modules.splice(0, 1);
-						modules.push(moduleName);
-						providerStore.registerModule(modules, {
-							...new ModuleAccessor<TModule, TState>(module),
-							namespaced: true
-						});
-						return {
-							__providerData: {
-								path: `${path}/${moduleName}`,
-								$path: '',
-								providerStore: providerStore
+				if (providerData && providerData.providerStore) {
+					const { providerStore, path, accessors } = providerData;
+					const newPath = getPath();
+					const newModule = getNewModule(newPath);
+					providerStore.registerModule(
+						getModuleNames(path, moduleName),
+						newModule.module
+					);
+					newProviderData = {
+						path: getPath(),
+						providerStore: providerStore,
+						accessors: {
+							...accessors,
+							[newPath]: newModule.accessor
+						}
+					};
+				} else if (this.$store) {
+					if (providerData) {
+						const { path, accessors } = providerData;
+						const newPath = getPath();
+						const newModule = getNewModule(newPath);
+						this.$store.registerModule(
+							getModuleNames(path, moduleName),
+							newModule.module
+						);
+						newProviderData = {
+							path: newPath,
+							accessors: {
+								...accessors,
+								[newPath]: newModule.accessor
 							}
 						};
-					} else if (this.$store) {
-						if (providerData) {
-							const { $path } = providerData;
-							const modules = $path.split('/');
-							modules.splice(0, 1);
-							modules.push(moduleName);
-							this.$store.registerModule(modules, {
-								...new ModuleAccessor<TModule, TState>(module),
-								namespaced: true
-							});
-							return {
-								__providerData: {
-									$path: `${$path}/${moduleName}`,
-									path: ''
-								}
-							};
-						} else {
-							this.$store.registerModule(moduleName, {
-								...new ModuleAccessor<TModule, TState>(module),
-								namespaced: true
-							});
-							return {
-								__providerData: {
-									$path: `/${moduleName}`,
-									path: ''
-								}
-							};
-						}
 					} else {
-						throw new Error('No vuex provided!');
+						const newPath = getPath();
+						const newModule = getNewModule(newPath);
+						this.$store.registerModule(moduleName, newModule.module);
+						newProviderData = {
+							path: `${moduleName}/`,
+							accessors: {
+								[newPath]: newModule.accessor
+							}
+						};
 					}
 				} else {
-					throw new Error('use root provider or set module name!');
+					throw new Error('No vuex provided!');
 				}
+			}
+			if (!this.bedrock) {
+				return {
+					__providerData: newProviderData
+				};
+			} else {
+				return {
+					__providerData: null
+				};
 			}
 		},
 		render(createElement: any) {
@@ -90,10 +145,14 @@ export default function provider<
 				'div',
 				{
 					attrs: {
-						id: moduleName ? `__${moduleName}-provider` : '__root-provider'
+						id: `__${this.localModuleName}`
 					}
 				},
-				this.$slots.default
+				[
+					this.$scopedSlots.default
+						? this.$scopedSlots.default({ provider: this.localAccessor })
+						: this.$slots.default
+				]
 			);
 		}
 	} as any;

@@ -1,32 +1,35 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, { Store } from 'vuex';
 import ModuleAccessor from '../ModuleAccessor';
 import Module from '../Module';
 import { ExtractState } from '../Types';
-import { ProviderData } from './types';
+import { ProviderData, Accessors } from './types';
 Vue.use(Vuex);
 
 export default function <
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(module: TModule, moduleName?: string) {
-	const getModulePath = (path: string, name: string): string | null => {
-		const modules: string[] = path.split('/');
-		const firstModuleIndex = modules.findIndex((m) => m === name);
-		let modulePath = '';
+>(moduleName?: string) {
+	const getAccessor = (
+		path: string,
+		moduleName: string,
+		accessors: Accessors
+	): ModuleAccessor<TModule, TState> => {
+		const moduleNames: string[] = path.split('/');
+		const firstModuleIndex = moduleNames.findIndex((m) => m === moduleName);
 		if (firstModuleIndex > -1) {
-			modulePath = modules.reduce((path, value, index) => {
+			const modulePath = moduleNames.reduce((fullPath, value, index) => {
 				if (index <= firstModuleIndex) {
-					return (path += `${value}/`);
+					return (fullPath += `${value}/`);
 				} else if (index + 1 === firstModuleIndex) {
-					return (path += value);
+					return (fullPath += value);
 				} else {
-					return path;
+					return fullPath;
 				}
-			});
-			return modulePath;
+			}, '');
+			return accessors[modulePath];
 		} else {
-			return null;
+			throw new Error('module not found!');
 		}
 	};
 
@@ -34,47 +37,33 @@ export default function <
 		inject: { __providerData: { from: '__providerData', default: undefined } },
 		data() {
 			const providerData = (this as any).__providerData as ProviderData;
-			const get$StoreModule = () => {
-				if (moduleName) {
-					const modulePath = getModulePath(providerData.$path, moduleName);
-					if (modulePath) {
-						return {
-							provider: new ModuleAccessor<TModule, TState>(
-								module,
-								modulePath
-							).of<TModule>(this.$store)
-						};
-					} else {
-						throw new Error('module not found!');
-					}
-				} else {
-					throw new Error('module name is required!');
-				}
-			};
 			if (providerData && providerData.providerStore) {
-				const { path, providerStore } = providerData;
+				const { path, providerStore, accessors } = providerData;
 				if (moduleName) {
-					const modulePath = getModulePath(path, moduleName);
-					if (modulePath) {
-						return {
-							provider: new ModuleAccessor<TModule, TState>(
-								module,
-								modulePath
-							).of<TModule>(providerStore)
-						};
-					} else {
-						return get$StoreModule();
-					}
+					const accessor = getAccessor(path, moduleName, accessors);
+					return {
+						provider: accessor.of(providerStore)
+					};
 				} else {
 					return {
-						provider: new ModuleAccessor<TModule, TState>(
-							module,
-							''
-						).of<TModule>(providerStore)
+						provider: (accessors.root as ModuleAccessor<TModule, TState>).of(
+							providerStore
+						)
 					};
 				}
 			} else {
-				return get$StoreModule();
+				if (moduleName) {
+					const accessor = getAccessor(
+						providerData?.path || '',
+						moduleName,
+						providerData?.accessors
+					);
+					return {
+						provider: accessor.of(this.$store)
+					};
+				} else {
+					throw new Error('module name is required!');
+				}
 			}
 		}
 	});

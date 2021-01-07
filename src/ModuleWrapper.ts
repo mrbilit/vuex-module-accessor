@@ -73,7 +73,6 @@ export default class ModuleWrapper<
 					Object.defineProperty(this, key, {
 						value: function (payload: any) {
 							if (!this.context || !this.context.dispatch) {
-								console.log(this.context);
 								throw new Error('Actions are not available in this context');
 							}
 							return this.context.dispatch(
