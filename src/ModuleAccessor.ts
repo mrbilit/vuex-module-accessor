@@ -1,8 +1,11 @@
+import rfdc from 'rfdc';
 import { Store } from 'vuex/types/index';
 import Module from './Module';
 import ModuleWrapper from './ModuleWrapper';
 import { StoreContext } from './StoreContext';
 import { ExtractState } from './Types';
+import('rfdc');
+const clone = rfdc({ proto: true });
 
 // Constants
 export const mutationSetTransform = (name: string) =>
@@ -156,7 +159,7 @@ export default class ModuleAccessor<
 		});
 
 		return {
-			state: () => this.module.state,
+			state: () => clone(this.module.state),
 			mutations,
 			getters,
 			actions,
