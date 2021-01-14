@@ -18,6 +18,8 @@ yarn:
 yarn add vuex-module-accessor
 ```
 
+#### [vue example](https://github.com/badihi/vuex-module-accessor/tree/master/Examples/vue-example)
+
 #### [nuxt example](https://github.com/badihi/vuex-module-accessor/tree/master/Examples/nuxt-example)
 
 #### [nuxt provider example](https://github.com/badihi/vuex-module-accessor/tree/master/Examples/nuxt-provider)
