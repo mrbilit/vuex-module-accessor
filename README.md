@@ -1,4 +1,4 @@
-# Vuex Typesafe Module Accessor
+# Vuex Module Accessor - Using Typescript to make Vuex type-safe
 Managing the state of a large application without using types is an insane technical decision! We became aware of that in out team when out projects was getting larger and larger. So we decided to develop a wrapper to make sate management possible in a type-safe manner wihout loosing the benefits of Vuex.
 
 ## License
@@ -19,7 +19,7 @@ yarn:
 yarn add vuex-module-accessor
 ```
 
-## Create Module:
+## Create module
 
 
 Define the state of your module in a POJO class:
@@ -42,7 +42,7 @@ class TestModule extends Module<TestState> {
 }
 ```
 
-#### Mutations:
+#### Mutations
 
 Every setter in the module class will be considered as a mutation. Also you can use mutation decorator to define non-setter mutations.
 Note that these are mutations for real, and so they will not have access to getters and actions.
@@ -67,7 +67,7 @@ class TestModule extends Module<TestState> {
 }
 ```
 
-#### Getters:
+#### Getters
 
 All getters will be considered as module getters.
 
@@ -84,7 +84,7 @@ class TestModule extends Module<TestState> {
 }
 ```
 
-#### Actions:
+#### Actions
 
 Methods without any decoration will be considered as actions. So they can read the state, access getters and call mutations.
 
@@ -105,7 +105,7 @@ class TestModule extends Module<TestState> {
 }
 ```
 
-### ModuleAccessor
+### `ModuleAccessor`
 `ModuleAccessor` will handle the conversion of the `Module` class to a typical `Vuex Module`. It also will provide a reference to `ModuleWrapper`, that will handle calling vuex operations in a type-safe manner.
 You will use it like this to define a module and have a reference to access it anywhere in your program.
 
@@ -114,7 +114,7 @@ You will use it like this to define a module and have a reference to access it a
 export default new ModuleAccessor(new TestModule(), 'testStore/');
 ```
 
-### Registering the Module:
+### Registering the module
 
 #### Nuxt.js
 In a Nuxt.js project, you are already done, you just have to put the file that was described above inside `store` directory. Note that the path must be compatible with the namespace that you specify:
