@@ -19,7 +19,7 @@ yarn:
 yarn add vuex-module-accessor
 ```
 
-## Create module
+## Creating a module
 
 
 Define the state of your module in a POJO class:
