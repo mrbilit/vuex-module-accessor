@@ -1,4 +1,5 @@
 # Vuex Module Accessor - Using Typescript to make Vuex type-safe
+
 Managing the state of a large application without using types is an insane technical decision! We became aware of that in out team when out projects was getting larger and larger. So we decided to develop a wrapper to make sate management possible in a type-safe manner wihout loosing the benefits of Vuex.
 
 ## License
@@ -20,7 +21,6 @@ yarn add vuex-module-accessor
 ```
 
 ## Creating a module
-
 
 Define the state of your module in a POJO class:
 
@@ -106,6 +106,7 @@ class TestModule extends Module<TestState> {
 ```
 
 ### `ModuleAccessor`
+
 `ModuleAccessor` will handle the conversion of the `Module` class to a typical `Vuex Module`. It also will provide a reference to `ModuleWrapper`, that will handle calling vuex operations in a type-safe manner.
 You will use it like this to define a module and have a reference to access it anywhere in your program.
 
@@ -117,14 +118,17 @@ export default new ModuleAccessor(new TestModule(), 'testStore/');
 ### Registering the module
 
 #### Nuxt.js
+
 In a Nuxt.js project, you are already done, you just have to put the file that was described above inside `store` directory. Note that the path must be compatible with the namespace that you specify:
 
 ~/store/testStore.ts
+
 ```typescript
 export default new ModuleAccessor(new TestModule(), 'testStore/');
 ```
 
 #### Vue
+
 In a Vue project, you need to import accessor and register it as module, where you initialize Vuex store.
 ~/store/index.ts
 
@@ -145,10 +149,12 @@ export default new Vuex.Store({
 ```
 
 ## Accessing the module
+
 You can use the exported `ModuleWrapper` in order to access the Vuex module with type-safety.\
 This will make interacting with Vuex feel like working with an ordinary class, and handles all the work needed to call the Vuex apis behind the scene.
 
 ### ModuleAccessor.of()
+
 accessor.of() :
 `ModuleWrapper` has a method, called `of()` that takes the store instance and returns the `Module` that can be used to access all module's features:
 
@@ -209,9 +215,11 @@ computed: {
 #### [nuxt provider example](https://github.com/badihi/vuex-module-accessor/tree/master/Examples/nuxt-provider)
 
 ## Acknowledgments
+
 This project is made during development of [MrBilit](https://mrbilit.com/), the online travel agency.
 ![Mrbilit](https://mrbilit.com/icon.png)
 
 ## Contribution
+
 We have no plan for accepting contribution outside of our team on the project right now, until it becomes ready to be publicly developed.
 Anyway, we are ready to hear feedbacks from you to improve it!
