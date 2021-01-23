@@ -7,3 +7,7 @@ export type ProviderData = {
 	accessors: Accessors;
 	providerStore?: Store<any>;
 };
+
+export type ConsumerOptions = {
+	bedrock?: boolean;
+};

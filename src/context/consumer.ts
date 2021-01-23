@@ -1,15 +1,15 @@
 import Vue from 'vue';
-import Vuex, { Store } from 'vuex';
+import Vuex from 'vuex';
 import ModuleAccessor from '../ModuleAccessor';
 import Module from '../Module';
 import { ExtractState } from '../Types';
-import { ProviderData, Accessors } from './types';
+import { ProviderData, Accessors, ConsumerOptions } from './types';
 Vue.use(Vuex);
 
 export default function <
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(moduleName?: string) {
+>(moduleName?: string, options?: ConsumerOptions) {
 	const getAccessor = (
 		path: string,
 		moduleName: string,
@@ -35,6 +35,13 @@ export default function <
 
 	return Vue.extend({
 		inject: { __providerData: { from: '__providerData', default: undefined } },
+		provide() {
+			if (options?.bedrock) {
+				return {
+					__providerData: null
+				};
+			}
+		},
 		data() {
 			const providerData = (this as any).__providerData as ProviderData;
 			if (providerData && providerData.providerStore) {
