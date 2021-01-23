@@ -33,7 +33,7 @@ export default function provider<
 			}
 		},
 		data() {
-			return { localModuleName: 'provider', localAccessor: null };
+			return { localAccessor: null };
 		},
 		inject: { __providerData: { from: '__providerData', default: undefined } },
 		provide(): { __providerData: ProviderData | null } | undefined {
@@ -58,9 +58,7 @@ export default function provider<
 				};
 			};
 			// set module name
-			const moduleName =
-				this.moduleName || (this.$options._componentTag as string);
-			this.localModuleName = moduleName;
+			const moduleName = this.moduleName || module.constructor.name;
 			//
 			const providerData = this.__providerData as ProviderData;
 			let newProviderData: ProviderData = {
@@ -149,7 +147,7 @@ export default function provider<
 				'div',
 				{
 					attrs: {
-						id: `__${this.localModuleName}`
+						id: `__${this.$options._componentTag}`
 					}
 				},
 				[
