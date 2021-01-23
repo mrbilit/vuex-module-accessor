@@ -44,7 +44,6 @@ export default function provider<
 				module: VModule<any, any>;
 			} => {
 				const accessor = new ModuleAccessor<TModule, TState>(module, namespace);
-				this.localAccessor = accessor;
 				return {
 					module: {
 						namespaced: true,
@@ -73,10 +72,12 @@ export default function provider<
 			};
 			if (this.root) {
 				const newModule = getNewModule('');
+				const store = new Vuex.Store(newModule.module);
+				this.localAccessor = newModule.accessor.of(store);
 				return {
 					__providerData: {
 						path: '',
-						providerStore: new Vuex.Store(newModule.module),
+						providerStore: store,
 						accessors: {
 							root: newModule.accessor
 						}
@@ -91,6 +92,7 @@ export default function provider<
 						getModuleNames(path, moduleName),
 						newModule.module
 					);
+					this.localAccessor = newModule.accessor.of(providerStore);
 					newProviderData = {
 						path: getPath(),
 						providerStore: providerStore,
@@ -104,6 +106,7 @@ export default function provider<
 						const { path, accessors } = providerData;
 						const newPath = getPath();
 						const newModule = getNewModule(newPath);
+						this.localAccessor = newModule.accessor.of(this.$store);
 						this.$store.registerModule(
 							getModuleNames(path, moduleName),
 							newModule.module
@@ -119,6 +122,7 @@ export default function provider<
 						const newPath = getPath();
 						const newModule = getNewModule(newPath);
 						this.$store.registerModule(moduleName, newModule.module);
+						this.localAccessor = newModule.accessor.of(this.$store);
 						newProviderData = {
 							path: `${moduleName}/`,
 							accessors: {
