@@ -1,18 +1,24 @@
 <template>
 	<div class="counter-container">
-		<button @click="testStore.decrease()">-</button>
+		<button @click="provider.decrease()">-</button>
 		<div>
-			{{ testStore.state.count }}
+			{{ provider.count }}
 		</div>
-		<button @click="testStore.increase()">+</button>
+		<button @click="provider.increase()">+</button>
 	</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
-import testStore from '../providers/testStore';
-import { consumer } from 'vuex-module-accessor';
+import FooModule from '../providers/fooModule';
+import BarModule from '../providers/barModule';
 
-export default consumer(testStore, 'testStore').extend({});
+import { consumer } from '../../../lib/context';
+
+export default consumer(BarModule).extend({
+	mounted() {
+		// console.log(this.provider);
+	}
+});
 </script>

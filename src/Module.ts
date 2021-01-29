@@ -11,7 +11,8 @@ export default abstract class Module<TState extends ModuleState> {
 		return '';
 	}
 
-	constructor(state: TState) {
+	constructor(State: { new (...args: any[]): TState }) {
+		const state = new State();
 		this.state = state;
 		this.context = {
 			state

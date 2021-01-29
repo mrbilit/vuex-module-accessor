@@ -4,35 +4,13 @@ import ModuleAccessor from '../ModuleAccessor';
 import Module from '../Module';
 import { ExtractState } from '../Types';
 import { ProviderData, Accessors, ConsumerOptions } from './types';
+import { getAccessor } from './helpers';
 Vue.use(Vuex);
 
 export default function <
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(moduleName?: string, options?: ConsumerOptions) {
-	const getAccessor = (
-		path: string,
-		moduleName: string,
-		accessors: Accessors
-	): ModuleAccessor<TModule, TState> => {
-		const moduleNames: string[] = path.split('/');
-		const firstModuleIndex = moduleNames.findIndex((m) => m === moduleName);
-		if (firstModuleIndex > -1) {
-			const modulePath = moduleNames.reduce((fullPath, value, index) => {
-				if (index <= firstModuleIndex) {
-					return (fullPath += `${value}/`);
-				} else if (index + 1 === firstModuleIndex) {
-					return (fullPath += value);
-				} else {
-					return fullPath;
-				}
-			}, '');
-			return accessors[modulePath];
-		} else {
-			throw new Error('module not found!');
-		}
-	};
-
+>(Module: { new (...args: any[]): TModule }, options?: ConsumerOptions) {
 	return Vue.extend({
 		inject: { __providerData: { from: '__providerData', default: undefined } },
 		provide() {
@@ -42,31 +20,37 @@ export default function <
 				};
 			}
 		},
-		data() {
+		data(): { provider: TModule } {
+			const moduleName = Module.name;
 			const providerData = (this as any).__providerData as ProviderData;
 			if (providerData && providerData.providerStore) {
 				const { path, providerStore, accessors } = providerData;
 				if (moduleName) {
-					const accessor = getAccessor(path, moduleName, accessors);
+					const accessor = getAccessor<TModule, TState>(
+						path,
+						moduleName,
+						accessors
+					);
 					return {
-						provider: accessor.of(providerStore)
+						provider: accessor.accessor.of(providerStore)
 					};
 				} else {
 					return {
-						provider: (accessors.root as ModuleAccessor<TModule, TState>).of(
-							providerStore
-						)
+						provider: (accessors.root.accessor as ModuleAccessor<
+							TModule,
+							TState
+						>).of(providerStore)
 					};
 				}
 			} else {
 				if (moduleName) {
-					const accessor = getAccessor(
+					const accessor = getAccessor<TModule, TState>(
 						providerData?.path || '',
 						moduleName,
 						providerData?.accessors
 					);
 					return {
-						provider: accessor.of(this.$store)
+						provider: accessor.accessor.of(this.$store)
 					};
 				} else {
 					throw new Error('module name is required!');

@@ -1,24 +1,33 @@
 <template>
-	<provider>
-		<div class="container">
-			<counter />
-		</div>
-	</provider>
+	<foo-provider root>
+		<template #default="{ provider }">
+			<bar-provider>
+				<div class="container">
+					{{ `${provider.state.count}` }}
+					<client-only>
+						<counter />
+					</client-only>
+				</div>
+			</bar-provider>
+		</template>
+	</foo-provider>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
-import testStore from '../providers/testStore';
+import FooModule from '../providers/fooModule';
+import BarModule from '../providers/barModule';
 
 import Counter from '../components/Counter.vue';
 
-import { provider } from 'vuex-module-accessor';
+import { provider } from '../../../lib/context';
 
 export default Vue.extend({
 	computed: {},
 	components: {
-		Provider: provider(testStore, 'testStore'),
+		FooProvider: provider(FooModule),
+		BarProvider: provider(BarModule),
 		Counter
 	}
 });
