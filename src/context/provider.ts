@@ -63,7 +63,7 @@ export default function provider<
 				Module
 			);
 
-			const injectedModules: TModule[] = [];
+			const injectedModules: (() => TModule)[] = [];
 			if (moduleNames) {
 				Object.keys(moduleNames).forEach((key) => {
 					if (providerData && providerData.providerStore) {
@@ -72,7 +72,7 @@ export default function provider<
 							moduleNames[Number(key)],
 							providerData.accessors
 						).accessor.of(providerData.providerStore);
-						injectedModules[Number(key)] = accessor;
+						injectedModules[Number(key)] = () => accessor;
 					}
 				});
 			}

@@ -2,20 +2,24 @@ import { Module } from '../../../lib';
 import { inject } from '../../../lib/context';
 
 import FooModule from '~/providers/fooModule';
+import { ModuleGetter } from '~/../../lib/Types';
 
 class BarState {}
 
 export default class BarModule extends Module<BarState> {
-	constructor(@inject('FooModule') private fooModule: FooModule) {
+	foo: FooModule;
+	constructor(@inject('FooModule') private fooModule: ModuleGetter<FooModule>) {
 		super(BarState);
+		this.foo = this.useModule(this.fooModule);
 	}
+
 	get count(): number {
-		return this.fooModule.state.count;
+		return this.foo.state.count;
 	}
 	increase() {
-		this.fooModule.increase();
+		this.foo.increase();
 	}
 	decrease() {
-		this.fooModule.decrease();
+		this.foo.decrease();
 	}
 }
