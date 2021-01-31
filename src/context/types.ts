@@ -1,6 +1,7 @@
 import { Store } from 'vuex';
 import { ModuleAccessor } from '..';
 
+export type ModuleConstructor<TModule> = { new (...args: any[]): TModule };
 export type Accessor = {
 	accessor: ModuleAccessor<any, any>;
 	moduleName: string;
@@ -15,6 +16,7 @@ export type ProviderData = {
 };
 
 export type ConsumerOptions = {
+	providerName?: string;
 	bedrock?: boolean;
 };
 

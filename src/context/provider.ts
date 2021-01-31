@@ -4,7 +4,7 @@ import { Reflection } from '@abraham/reflection';
 import ModuleAccessor from '../ModuleAccessor';
 import Module from '../Module';
 import { ExtractState } from '../Types';
-import { InjectMeta, ProviderData } from './types';
+import { InjectMeta, ProviderData, ModuleConstructor } from './types';
 import { getAccessor, getModuleNames } from './helpers';
 import { INJECT_KEY } from './decorators';
 
@@ -13,12 +13,16 @@ Vue.use(Vuex);
 export default function provider<
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(Module: { new (...args: any[]): TModule }): VueConstructor {
+>(Module: ModuleConstructor<TModule>): VueConstructor {
 	return {
 		props: {
 			root: {
 				type: Boolean,
 				default: false
+			},
+			name: {
+				type: String,
+				default: null
 			},
 			bedrock: {
 				type: Boolean,
@@ -78,7 +82,7 @@ export default function provider<
 			}
 			// new module
 			const module: TModule = new Module(...injectedModules);
-			const moduleName = Module.name;
+			const moduleName = this.name || Module.name;
 			// get new path
 			const getPath = (): string => {
 				return `${providerData?.path || ''}${moduleName}/`;

@@ -8,7 +8,7 @@ class BarState {}
 
 export default class BarModule extends Module<BarState> {
 	foo: FooModule;
-	constructor(@inject('FooModule') private fooModule: ModuleGetter<FooModule>) {
+	constructor(@inject(FooModule) private fooModule: ModuleGetter<FooModule>) {
 		super(BarState);
 		this.foo = this.useModule(this.fooModule);
 	}

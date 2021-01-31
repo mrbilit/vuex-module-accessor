@@ -1,9 +1,9 @@
 import { Reflection } from '@abraham/reflection';
-import { InjectMeta } from './types';
+import { InjectMeta, ModuleConstructor } from './types';
 
 export const INJECT_KEY = 'inject-modules';
 export function inject(
-	modulename: string
+	Module: ModuleConstructor<any> | string
 ): (target: any, propertyKey: string | symbol, parameterIndex: number) => any {
 	return function (
 		target: any,
@@ -12,7 +12,7 @@ export function inject(
 	): any {
 		const modules: InjectMeta =
 			Reflection.getOwnMetadata(INJECT_KEY, target) || {};
-		modules[parameterIndex] = modulename;
+		modules[parameterIndex] = typeof Module === 'string' ? Module : Module.name;
 		Reflection.defineMetadata(INJECT_KEY, modules, target);
 	};
 }

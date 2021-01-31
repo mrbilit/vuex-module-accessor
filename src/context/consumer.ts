@@ -3,14 +3,14 @@ import Vuex from 'vuex';
 import ModuleAccessor from '../ModuleAccessor';
 import Module from '../Module';
 import { ExtractState } from '../Types';
-import { ProviderData, Accessors, ConsumerOptions } from './types';
+import { ProviderData, ConsumerOptions, ModuleConstructor } from './types';
 import { getAccessor } from './helpers';
 Vue.use(Vuex);
 
 export default function <
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(Module: { new (...args: any[]): TModule }, options?: ConsumerOptions) {
+>(Module: ModuleConstructor<TModule>, options?: ConsumerOptions) {
 	return Vue.extend({
 		inject: { __providerData: { from: '__providerData', default: undefined } },
 		provide() {
@@ -21,7 +21,7 @@ export default function <
 			}
 		},
 		data(): { provider: TModule } {
-			const moduleName = Module.name;
+			const moduleName = options?.providerName || Module.name;
 			const providerData = (this as any).__providerData as ProviderData;
 			if (providerData && providerData.providerStore) {
 				const { path, providerStore, accessors } = providerData;
