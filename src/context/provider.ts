@@ -4,8 +4,9 @@ import { Reflection } from '@abraham/reflection';
 import ModuleAccessor from '../ModuleAccessor';
 import Module from '../Module';
 import { ExtractState } from '../Types';
-import { ProviderData } from './types';
+import { InjectMeta, ProviderData } from './types';
 import { getAccessor, getModuleNames } from './helpers';
+import { INJECT_KEY } from './decorators';
 
 Vue.use(Vuex);
 
@@ -57,20 +58,21 @@ export default function provider<
 				};
 			};
 			// inject modules
-			const moduleNames: string[] | undefined = Reflection.getMetadata(
-				'inject-modules',
+			const moduleNames: InjectMeta | undefined = Reflection.getMetadata(
+				INJECT_KEY,
 				Module
 			);
+
 			const injectedModules: TModule[] = [];
 			if (moduleNames) {
-				moduleNames.forEach((name) => {
+				Object.keys(moduleNames).forEach((key) => {
 					if (providerData && providerData.providerStore) {
 						const accessor = getAccessor<TModule, TState>(
 							providerData.path,
-							name,
+							moduleNames[Number(key)],
 							providerData.accessors
 						).accessor.of(providerData.providerStore);
-						injectedModules.push(accessor);
+						injectedModules[Number(key)] = accessor;
 					}
 				});
 			}
@@ -83,7 +85,6 @@ export default function provider<
 			};
 			//
 			if (this.root) {
-				const newPath = getPath();
 				const newModule = getNewModule('');
 				const store = new Vuex.Store(newModule.module);
 				this.localAccessor = newModule.accessor.of(store);

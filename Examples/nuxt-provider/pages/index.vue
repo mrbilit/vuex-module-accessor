@@ -4,9 +4,7 @@
 			<bar-provider>
 				<div class="container">
 					{{ `${provider.state.count}` }}
-					<client-only>
-						<counter />
-					</client-only>
+					<counter />
 				</div>
 			</bar-provider>
 		</template>

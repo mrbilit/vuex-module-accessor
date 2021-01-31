@@ -1,13 +1,12 @@
 import { Module } from '../../../lib';
-import { injectModules } from '../../../lib/context';
+import { inject } from '../../../lib/context';
 
 import FooModule from '~/providers/fooModule';
 
 class BarState {}
 
-@injectModules
 export default class BarModule extends Module<BarState> {
-	constructor(private fooModule: FooModule) {
+	constructor(@inject('FooModule') private fooModule: FooModule) {
 		super(BarState);
 	}
 	get count(): number {

@@ -1,4 +1,4 @@
-import Vuex, { Store } from 'vuex';
+import { Store } from 'vuex';
 import { ModuleAccessor } from '..';
 
 export type Accessor = {
@@ -17,3 +17,5 @@ export type ProviderData = {
 export type ConsumerOptions = {
 	bedrock?: boolean;
 };
+
+export type InjectMeta = { [key: number]: string };

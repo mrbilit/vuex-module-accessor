@@ -1,5 +1,5 @@
 import provider from './provider';
 import consumer from './consumer';
-import { injectModules } from './decorators';
+import { inject } from './decorators';
 
-export { provider, consumer, injectModules };
+export { provider, consumer, inject };
