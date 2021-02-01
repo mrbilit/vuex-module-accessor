@@ -1,7 +1,7 @@
 import { Module } from '../../../lib';
 import { inject } from '../../../lib/context';
 
-import FooModule from '~/providers/fooModule';
+import FooModule from '~/modules/fooModule';
 import { ModuleGetter } from '~/../../lib/Types';
 
 class BarState {}

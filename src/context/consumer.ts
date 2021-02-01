@@ -3,14 +3,22 @@ import Vuex from 'vuex';
 import ModuleAccessor from '../ModuleAccessor';
 import Module from '../Module';
 import { ExtractState } from '../Types';
-import { ProviderData, ConsumerOptions, ModuleConstructor } from './types';
+import {
+	ProviderData,
+	ConsumerOptions,
+	ModuleConstructor,
+	ModuleAbstract
+} from './types';
 import { getAccessor } from './helpers';
 Vue.use(Vuex);
 
 export default function <
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(Module: ModuleConstructor<TModule>, options?: ConsumerOptions) {
+>(
+	Module: ModuleConstructor<TModule> | ModuleAbstract<TModule>,
+	options?: ConsumerOptions
+) {
 	return Vue.extend({
 		inject: { __providerData: { from: '__providerData', default: undefined } },
 		provide() {
@@ -21,14 +29,14 @@ export default function <
 			}
 		},
 		data(): { provider: TModule } {
-			const moduleName = options?.providerName || Module.name;
+			const providerName = options?.providerName;
 			const providerData = (this as any).__providerData as ProviderData;
 			if (providerData && providerData.providerStore) {
 				const { path, providerStore, accessors } = providerData;
-				if (moduleName) {
+				if (Module) {
 					const accessor = getAccessor<TModule, TState>(
 						path,
-						moduleName,
+						providerName || Module,
 						accessors
 					);
 					return {
@@ -43,17 +51,17 @@ export default function <
 					};
 				}
 			} else {
-				if (moduleName) {
+				if (Module) {
 					const accessor = getAccessor<TModule, TState>(
 						providerData?.path || '',
-						moduleName,
+						providerName || Module,
 						providerData?.accessors
 					);
 					return {
 						provider: accessor.accessor.of(this.$store)
 					};
 				} else {
-					throw new Error('module name is required!');
+					throw new Error('Module or module name is required!');
 				}
 			}
 		}

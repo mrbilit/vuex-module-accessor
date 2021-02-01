@@ -13,7 +13,7 @@ Vue.use(Vuex);
 export default function provider<
 	TModule extends Module<TState>,
 	TState = ExtractState<TModule>
->(Module: ModuleConstructor<TModule>): VueConstructor {
+>(Module: ModuleConstructor<TModule> | any): VueConstructor {
 	return {
 		props: {
 			root: {

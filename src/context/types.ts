@@ -1,7 +1,9 @@
 import { Store } from 'vuex';
 import { ModuleAccessor } from '..';
 
-export type ModuleConstructor<TModule> = { new (...args: any[]): TModule };
+export type ModuleAbstract<TModule> = Function & { prototype: TModule };
+export type ModuleConstructor<TModule> = new (...args: any[]) => TModule;
+
 export type Accessor = {
 	accessor: ModuleAccessor<any, any>;
 	moduleName: string;

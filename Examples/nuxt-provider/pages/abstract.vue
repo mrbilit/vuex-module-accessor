@@ -1,32 +1,32 @@
 <template>
-	<foo-provider root>
-		<template #default="{ provider }">
-			<bar-provider>
-				<div class="container">
-					{{ `${provider.state.count}` }}
-					<counter />
-				</div>
-			</bar-provider>
-		</template>
-	</foo-provider>
+	<div class="container">
+		<bird-provider root>
+			bird
+			<print />
+		</bird-provider>
+		<reptile-provider root>
+			reptile
+			<print />
+		</reptile-provider>
+	</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
-import FooModule from '../modules/fooModule';
-import BarModule from '../modules/barModule';
+import BirdModule, { BirdState } from '../modules/birdModule';
+import ReptileModule from '../modules/reptileModule';
 
-import Counter from '../components/Counter.vue';
+import Print from '../components/Print.vue';
 
 import { provider } from '../../../lib/context';
 
 export default Vue.extend({
 	computed: {},
 	components: {
-		FooProvider: provider(FooModule),
-		BarProvider: provider(BarModule),
-		Counter
+		BirdProvider: provider(BirdModule),
+		ReptileProvider: provider(ReptileModule),
+		Print
 	}
 });
 </script>

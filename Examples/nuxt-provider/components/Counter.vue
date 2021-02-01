@@ -11,8 +11,8 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import FooModule from '../providers/fooModule';
-import BarModule from '../providers/barModule';
+import FooModule from '../modules/fooModule';
+import BarModule from '../modules/barModule';
 
 import { consumer } from '../../../lib/context';
 
