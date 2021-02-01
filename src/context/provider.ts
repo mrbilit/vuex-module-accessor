@@ -70,13 +70,21 @@ export default function provider<
 			const injectedModules: (() => TModule)[] = [];
 			if (moduleNames) {
 				Object.keys(moduleNames).forEach((key) => {
-					if (providerData && providerData.providerStore) {
-						const accessor = getAccessor<TModule, TState>(
+					if (providerData) {
+						const accessorInfo = getAccessor<TModule, TState>(
 							providerData.path,
 							moduleNames[Number(key)],
 							providerData.accessors
-						).accessor.of(providerData.providerStore);
-						injectedModules[Number(key)] = () => accessor;
+						);
+						if (providerData.providerStore !== undefined) {
+							const accessor = accessorInfo.accessor.of(
+								providerData.providerStore
+							);
+							injectedModules[Number(key)] = () => accessor;
+						} else {
+							injectedModules[Number(key)] = () =>
+								accessorInfo.accessor.of(this.$store);
+						}
 					}
 				});
 			}
@@ -142,7 +150,7 @@ export default function provider<
 						this.$store.registerModule(moduleName, newModule.module);
 						this.localAccessor = newModule.accessor.of(this.$store);
 						newProviderData = {
-							path: `${moduleName}/`,
+							path: newPath,
 							accessors: {
 								[newPath]: { accessor: newModule.accessor, moduleName }
 							}
