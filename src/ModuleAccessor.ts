@@ -156,7 +156,7 @@ export default class ModuleAccessor<
 		});
 
 		return {
-			state: () => this.module.state,
+			state: () => new this.module.stateConstructor(),
 			mutations,
 			getters,
 			actions,

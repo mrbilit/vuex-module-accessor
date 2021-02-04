@@ -12,7 +12,7 @@
 		"@nuxt/typescript-runtime": "^2.0.0",
 		"core-js": "^3.6.5",
 		"nuxt": "^2.14.6",
-		"vuex-module-accessor": "^1.0.1"
+		"vuex-module-accessor": "^1.0.3"
 	},
 	"devDependencies": {
 		"@nuxt/types": "^2.14.6",

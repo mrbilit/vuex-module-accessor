@@ -6,13 +6,16 @@ export default abstract class Module<TState extends ModuleState> {
 	context: StoreContext<TState>;
 	namespace: string | null = null;
 	$t: (text: string, params?: string[] | { (k: string): string }) => string;
+	stateConstructor: { new (...args: any[]): TState };
 
 	get __module__(): string {
 		return '';
 	}
 
-	constructor(state: TState) {
+	constructor(stateConstructor: { new (...args: any[]): TState }) {
+		const state = new stateConstructor();
 		this.state = state;
+		this.stateConstructor = stateConstructor;
 		this.context = {
 			state
 		};
