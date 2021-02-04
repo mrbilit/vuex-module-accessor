@@ -7,7 +7,7 @@ class TestState {
 
 export class TestModule extends Module<TestState> {
 	constructor() {
-		super(new TestState());
+		super(TestState);
 	}
 
 	// mutations
