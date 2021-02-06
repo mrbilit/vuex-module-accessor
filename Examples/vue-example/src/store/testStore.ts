@@ -1,8 +1,8 @@
 import { ModuleAccessor, Module, mutation } from 'vuex-module-accessor';
 
 class TestState {
-	testValue: string = 'Module Accessor';
-	count: number = 0;
+	testValue = 'Module Accessor';
+	count = 0;
 }
 
 export class TestModule extends Module<TestState> {
