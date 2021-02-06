@@ -1,6 +1,5 @@
 import { Store } from 'vuex/types/index';
 import Module from './Module';
-import ModuleState from './ModuleState';
 import { StoreContext } from './StoreContext';
 import ModuleAccessor, {
 	getterTransform,
@@ -9,10 +8,7 @@ import ModuleAccessor, {
 	mutationSetTransform
 } from './ModuleAccessor';
 
-export default class ModuleWrapper<
-	TModule extends Module<TState>,
-	TState extends ModuleState
-> {
+export default class ModuleWrapper<TModule extends Module<TState>, TState> {
 	state: any;
 	context: StoreContext<TState> | Store<TState> | undefined;
 	constructor(public module: TModule, public namespace: string) {

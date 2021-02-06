@@ -1,7 +1,6 @@
-import ModuleState from './ModuleState';
 import { StoreContext } from './StoreContext';
 
-export default abstract class Module<TState extends ModuleState> {
+export default abstract class Module<TState> {
 	state: TState;
 	protected context: StoreContext<TState>;
 	namespace: string | null = null;
