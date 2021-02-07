@@ -1,6 +1,6 @@
 {
 	"name": "vuex-module-accessor",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "a module accessor for vuex",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
@@ -9,7 +9,8 @@
 		"vue",
 		"vuex",
 		"nuxtjs",
-		"nuxt"
+		"nuxt",
+		"typescript"
 	],
 	"author": "Ahmadreza Badihi",
 	"license": "MIT",

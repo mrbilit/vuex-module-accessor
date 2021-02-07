@@ -1,6 +1,5 @@
 import { Store } from 'vuex/types/index';
 import Module from './Module';
-import ModuleState from './ModuleState';
 import { StoreContext } from './StoreContext';
 import ModuleAccessor, {
 	getterTransform,
@@ -9,10 +8,7 @@ import ModuleAccessor, {
 	mutationSetTransform
 } from './ModuleAccessor';
 
-export default class ModuleWrapper<
-	TModule extends Module<TState>,
-	TState extends ModuleState
-> {
+export default class ModuleWrapper<TModule extends Module<TState>, TState> {
 	state: any;
 	context: StoreContext<TState> | Store<TState> | undefined;
 	constructor(public module: TModule, public namespace: string) {
@@ -73,7 +69,6 @@ export default class ModuleWrapper<
 					Object.defineProperty(this, key, {
 						value: function (payload: any) {
 							if (!this.context || !this.context.dispatch) {
-								console.log(this.context);
 								throw new Error('Actions are not available in this context');
 							}
 							return this.context.dispatch(
